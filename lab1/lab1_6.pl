@@ -113,13 +113,13 @@ wonder(nitre,2).
 
 
 /*Вопросы*/
-question(X1):-  write("What type is your resource?"), nl,
+question1(X1):-  write("What type is your resource?"), nl,
 				write("1. bonus"), nl,
 				write("2. rare"), nl,
 				write("3. strategic"), nl,
 				read(X1).
 				
-question(X2):-  write("Which additional income this resource provides to a cell?"), nl,
+question2(X2):-  write("Which additional income this resource provides to a cell?"), nl,
 				write("1. gold"), nl,
 				write("2. food"), nl,
 				write("3. production"), nl,
@@ -127,7 +127,7 @@ question(X2):-  write("Which additional income this resource provides to a cell?
 				write("5. culture"), nl,
 				read(X2).
 
-question(X3):-  write("Which improvement you can build on cell with that resource?"), nl,
+question3(X3):-  write("Which improvement you can build on cell with that resource?"), nl,
 				write("1. farm"), nl,
 				write("2. pasture"), nl,
 				write("3. quarry"), nl,
@@ -137,7 +137,7 @@ question(X3):-  write("Which improvement you can build on cell with that resourc
 				write("5. fishing vessel"), nl,
 				read(X3).
 
-question(X4):-  write("Required to build wonder of the world?"), nl,
+question4(X4):-  write("Required to build wonder of the world?"), nl,
 				write("1. yes"), nl,
 				write("2. no"), nl,
 				read(X4).
