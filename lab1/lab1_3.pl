@@ -77,5 +77,13 @@ uncle(X,Y):-
 	man(X),
 	parent(Z,Y),
 	sibling(X,Z).
+/*Предикат, проверяющий является ли X - дядей Y, 
+но без использования готового предиката*/
+uncle_ry(X,Y):-
+	man(X),
+	parent(Z,Y),
+	parent(W,X), 
+	parent(W,Z),
+	X \= Z.
 /*Предикат, выводящий всех дядей X*/
 uncle(X):- uncle(Y,X), print(Y), nl, fail.
