@@ -5,7 +5,7 @@
 
 1. Кукуруза - corn;
 2. Пшеница - wheat;
-3. Скот - liveStock;
+3. Скот - livestock;
 4. Камень - rock;
 5. Бананы - banana;
 6. Олени - deer;
