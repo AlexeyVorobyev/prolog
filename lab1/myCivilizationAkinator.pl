@@ -24,11 +24,12 @@ type(horse,3).
 type(iron,3).
 type(coal,3).
 type(nitre,3).
+type(uranium,3).
 
 /*
 БД по доп. доходу с клетки:
-	1 - золото, 
-	2 - еда, 
+	1 - золото,
+	2 - еда,
 	3 - производство,
 	4 - наука,
 	5 - культура
@@ -53,11 +54,12 @@ resource(horse,2).
 resource(iron,4).
 resource(coal,3).
 resource(nitre,2).
+resource(uranium,3).
 
 /*
 БД по улучшению, которое можно построить на клетке:
-	1 - ферма, 
-	2 - пастбище, 
+	1 - ферма,
+	2 - пастбище,
 	3 - каменоломня,
 	4 - рудник,
 	5 - плантация,
@@ -84,6 +86,7 @@ improvement(horse,2).
 improvement(iron,4).
 improvement(coal,4).
 improvement(nitre,4).
+improvement(uranium,4).
 
 /*
 БД по тому, необходим ли данный ресурс для постройки чуда света:
@@ -110,6 +113,15 @@ wonder(horse,1).
 wonder(iron,2).
 wonder(coal,1).
 wonder(nitre,2).
+wonder(uranium,1).
+
+/*
+БД по тому, необходим ли данный ресурс для создания ядерного оружия:
+	1 - да,
+	2 - нет
+*/
+nuclear(coal,2).
+nuclear(uranium,1).
 
 
 /*Вопросы*/
@@ -118,7 +130,7 @@ question1(X1):-  write("What type is your resource?"), nl,
 				write("2. rare"), nl,
 				write("3. strategic"), nl,
 				read(X1).
-				
+
 question2(X2):-  write("Which additional income this resource provides to a cell?"), nl,
 				write("1. gold"), nl,
 				write("2. food"), nl,
@@ -142,6 +154,11 @@ question4(X4):-  write("Required to build wonder of the world?"), nl,
 				write("2. no"), nl,
 				read(X4).
 
+question5(X5):-  write("Required to build nuclear weapon?"), nl,
+				write("1. yes"), nl,
+				write("2. no"), nl,
+				read(X5).
+
 
 /*Команда, выбрасывающая в контекст длину списка подходящих решений для предиката*/
 length_list_of_predicate(Count, Predicate):-
@@ -157,6 +174,9 @@ predicate_amount_of_solutions_equal_or_larger_than(Result, Predicate, Value):-
 	length_list_of_predicate(Count, call(Predicate)),
 	compare(Compare_result, Count, Value),
 	to_boolean(Compare_result, Result).
+/*Предикат проверки вхождения элемента в список*/
+member(X, [X|_]).
+member(X, [_|T]) :- member(X, T).
 
 /*Команда находящая все ресурсы, которые соответствуют условиям, описанным внтри этого предиката
 В случае если ресурс можно определить за меньщее кол-во вопросов, то ответ выдается сразу.*/
@@ -181,13 +201,33 @@ test_smart(X):-
 				(type(X,X1), resource(X,X2), improvement(X,X3)),
 				2
 			),
-			write(Third_result),
 			(Third_result -> (
 				question4(X4),
-				type(X,X1),
-				resource(X,X2),
-				improvement(X,X3),
-				wonder(X,X4)
+				(
+					findall(
+						X,
+						(
+							type(X,X1),
+							resource(X,X2),
+							improvement(X,X3),
+							wonder(X,X4)
+						),
+						List
+					),
+					(member(uranium, List); member(coal, List)) -> (
+						question5(X5),
+						type(X,X1),
+						resource(X,X2),
+						improvement(X,X3),
+						wonder(X,X4),
+						nuclear(X,X5)
+					);(
+						type(X,X1),
+						resource(X,X2),
+						improvement(X,X3),
+						wonder(X,X4)
+					)
+				)
 			);(
 				type(X,X1),
 				resource(X,X2),
