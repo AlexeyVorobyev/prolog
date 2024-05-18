@@ -133,8 +133,8 @@ question3(X3):-  write("Which improvement you can build on cell with that resour
 				write("3. quarry"), nl,
 				write("4. mine"), nl,
 				write("5. plantation"), nl,
-				write("5. camp"), nl,
-				write("5. fishing vessel"), nl,
+				write("6. camp"), nl,
+				write("7. fishing vessel"), nl,
 				read(X3).
 
 question4(X4):-  write("Required to build wonder of the world?"), nl,
@@ -142,8 +142,64 @@ question4(X4):-  write("Required to build wonder of the world?"), nl,
 				write("2. no"), nl,
 				read(X4).
 
-				
+
+/*Команда, выбрасывающая в контекст длину списка подходящих решений для предиката*/
+length_list_of_predicate(Count, Predicate):-
+				findall(X, call(Predicate), List),
+				length(List, Count).
+/*Команда, выбрасывающая в контекст булево значение,
+получаемое в резултате сравнения значений сравнения prolog*/
+to_boolean(Result, Boolean) :-
+    ((Result = (=); Result = (>)) -> Boolean = true ; Boolean = false).
+/*Команда выбрасывающая в контекст булево значение, которое говорит,
+что количество подходящих решений переданного Predicate больше или равно Value*/
+predicate_amount_of_solutions_equal_or_larger_than(Result, Predicate, Value):-
+	length_list_of_predicate(Count, call(Predicate)),
+	compare(Compare_result, Count, Value),
+	to_boolean(Compare_result, Result).
+
+/*Команда находящая все ресурсы, которые соответствуют условиям, описанным внтри этого предиката
+В случае если ресурс можно определить за меньщее кол-во вопросов, то ответ выдается сразу.*/
+test_smart(X):-
+	question1(X1),
+	predicate_amount_of_solutions_equal_or_larger_than(
+		First_result,
+		type(X,X1),
+		2
+	),
+	(First_result -> (
+		question2(X2),
+		predicate_amount_of_solutions_equal_or_larger_than(
+			Second_result,
+			(type(X,X1), resource(X,X2)),
+			2
+		),
+		(Second_result -> (
+			question3(X3),
+			predicate_amount_of_solutions_equal_or_larger_than(
+				Third_result,
+				(type(X,X1), resource(X,X2), improvement(X,X3)),
+				2
+			),
+			write(Third_result),
+			(Third_result -> (
+				question4(X4),
+				type(X,X1),
+				resource(X,X2),
+				improvement(X,X3),
+				wonder(X,X4)
+			);(
+				type(X,X1),
+				resource(X,X2),
+				improvement(X,X3)
+			))
+		);(
+			type(X,X1),
+			resource(X,X2)
+		))
+	);(
+		type(X,X1)
+	)).
+
 /*Команда запуска теста*/
-start_test:- 	question1(X1), question2(X2), question3(X3), question4(X4),
-				type(X,X1), resource(X,X2), improvement(X,X3), wonder(X,X4),
-				write(X).
+start_test_smart:- test_smart(X), print(X),nl,fail.
