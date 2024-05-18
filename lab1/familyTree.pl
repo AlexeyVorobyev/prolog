@@ -48,6 +48,8 @@ parent(duhovlad,zlatomir).
 parent(zhdana,zdislava).
 parent(zhdana,zlatomir).
 
+/*Задание 1*/
+
 /*Предикат вывода всех мужчин*/
 men():- man(X), print(X), nl, fail.
 
@@ -80,3 +82,21 @@ s_b(X,Y):-
 		X \= Y.
 /*Предикат выводящий всех сиблингов X*/
 s_b(X):- s_b(Y,X), print(Y), nl, fail.
+
+
+/*Задание 2*/
+
+
+/*Предикат, проверяющий является ли X - сыном Y*/
+son(X,Y):- man(X), parent(Y,X).
+/*Предикат, выводящий сына X*/
+son(X):- son(Y,X) -> print(Y).
+
+/*Предикат, проверяющий является ли X - сестрой Y*/
+sister(X,Y):-
+	woman(X),
+	parent(Z,X),
+	parent(Z,Y),
+	X \= Y.
+/*Предикат, выводящий всех сестёр X*/
+sisters(X):- sister(Y,X), print(Y), nl, fail.
