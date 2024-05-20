@@ -7,6 +7,8 @@ man(svyatoslav).
 man(dobrozhir).
 man(bogomil).
 man(zlatomir).
+man(theGuy).
+man(son).
 
 woman(goluba).
 woman(lubomila).
@@ -17,6 +19,11 @@ woman(bozhedara).
 woman(broneslava).
 woman(veselina).
 woman(zdislava).
+woman(wife).
+
+parent(wife, son).
+parent(zlatomir,son).
+parent(bratislava, wife).
 
 parent(voeneg,ratibor).
 parent(voeneg,bratislava).
@@ -45,8 +52,10 @@ parent(veslava,veselina).
 
 parent(duhovlad,zdislava).
 parent(duhovlad,zlatomir).
+parent(duhovlad,theGuy).
 parent(zhdana,zdislava).
 parent(zhdana,zlatomir).
+parent(zhdana,theGuy).
 
 /*Задание 1*/
 
@@ -67,11 +76,9 @@ mother(X):- mother(Y,X), print(Y), nl, fail.
 /*Предикат,определяющий то, что X - брат Y*/
 brother(X,Y):- 
 	man(X), 
-	once((
-		parent(Z,X), 
-		parent(Z,Y)
-		))
-	, X \= Y.
+	parent(Z,X),
+    parent(Z,Y),
+    X \= Y.
 /*Предикат, выводящий всех братьев X*/
 brothers(X):- brother(Y,X), print(Y), nl, fail.
 
@@ -167,8 +174,7 @@ couple(X,Y):-
 %Z - жена
 %I - бабка жены
 what(X, I):-
-    brother(Y, X),
+    brother(X, Y),
+    man(Y),
     couple(Y,Z),
     grand_ma(I,Z).
-
-what_find(I):- what(X,I).
