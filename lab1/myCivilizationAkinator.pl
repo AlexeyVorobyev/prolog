@@ -1,4 +1,4 @@
-/*
+ /*
 БД по типу ресурса:
 	1 - бонусный, 
 	2 - редкий, 
@@ -103,7 +103,7 @@ wonder(fish,2).
 wonder(crab,2).
 wonder(vine,2).
 wonder(citrus,2).
-wonder(sugar,1).
+wonder(sugar,2).
 wonder(fox,2).
 wonder(quartz,2).
 wonder(marble,2).
@@ -122,6 +122,14 @@ wonder(uranium,1).
 */
 nuclear(coal,2).
 nuclear(uranium,1).
+
+/*
+БД по тому, фрукт или нет:
+	1 - да,
+	2 - нет
+*/
+fruit(citrus,1).
+fruit(sugar,2).
 
 
 /*Вопросы*/
@@ -159,21 +167,29 @@ question5(X5):-  write("Required to build nuclear weapon?"), nl,
 				write("2. no"), nl,
 				read(X5).
 
+question6(X6):-  write("Is it fruit?"), nl,
+				write("1. yes"), nl,
+				write("2. no"), nl,
+				read(X6).
+
 
 /*Команда, выбрасывающая в контекст длину списка подходящих решений для предиката*/
 length_list_of_predicate(Count, Predicate):-
 				findall(X, call(Predicate), List),
 				length(List, Count).
+
 /*Команда, выбрасывающая в контекст булево значение,
 получаемое в резултате сравнения значений сравнения prolog*/
 to_boolean(Result, Boolean) :-
     ((Result = (=); Result = (>)) -> Boolean = true ; Boolean = false).
+
 /*Команда выбрасывающая в контекст булево значение, которое говорит,
 что количество подходящих решений переданного Predicate больше или равно Value*/
 predicate_amount_of_solutions_equal_or_larger_than(Result, Predicate, Value):-
 	length_list_of_predicate(Count, call(Predicate)),
 	compare(Compare_result, Count, Value),
 	to_boolean(Compare_result, Result).
+
 /*Предикат проверки вхождения элемента в список*/
 member(X, [X|_]).
 member(X, [_|T]) :- member(X, T).
@@ -214,19 +230,28 @@ test_smart(X):-
 						),
 						List
 					),
-					(member(uranium, List); member(coal, List)) -> (
-						question5(X5),
-						type(X,X1),
-						resource(X,X2),
-						improvement(X,X3),
-						wonder(X,X4),
-						nuclear(X,X5)
-					);(
-						type(X,X1),
-						resource(X,X2),
-						improvement(X,X3),
-						wonder(X,X4)
-					)
+					(member(citrus, List); member(sugar, List)) -> (
+                        question6(X6),
+                        type(X,X1),
+                        resource(X,X2),
+                        improvement(X,X3),
+                        wonder(X,X4),
+                        fruit(X,X6)
+                    );(
+                        (member(uranium, List); member(coal, List)) -> (
+                            question5(X5),
+                            type(X,X1),
+                            resource(X,X2),
+                            improvement(X,X3),
+                            wonder(X,X4),
+                            nuclear(X,X5)
+                        );(
+                            type(X,X1),
+                            resource(X,X2),
+                            improvement(X,X3),
+                            wonder(X,X4)
+                        )
+                    )
 				)
 			);(
 				type(X,X1),

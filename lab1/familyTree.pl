@@ -144,3 +144,31 @@ uncle_ry(X,Y):-
 	X \= Z.
 /*Предикат, выводящий всех дядей X*/
 uncle(X):- uncle(Y,X), print(Y), nl, fail.
+
+
+%/**Brother**/
+%brother(X,Y):-
+%	man(X),
+%	parent(Z,X),
+%	parent(Z,Y),
+%	X \= Y.
+
+couple(X,Y):-
+    parent(X,Z),
+    parent(Y,Z),
+    X\= Y.
+
+/*Предикат, выводящий
+у меня есть брат у него есть жена у ней есть бабулю
+вывести бабулю жены брата
+*/
+%X - Я
+%Y - брат
+%Z - жена
+%I - бабка жены
+what(X, I):-
+    brother(Y, X),
+    couple(Y,Z),
+    grand_ma(I,Z).
+
+what_find(I):- what(X,I).
