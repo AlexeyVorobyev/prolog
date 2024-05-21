@@ -59,16 +59,28 @@ parent(zhdana,theGuy).
 
 /*Задание 1*/
 
-/*Предикат вывода всех мужчин*/
+/*
+men() - is failure
+Предикат вывода всех мужчин
+*/
 men():- man(X), print(X), nl, fail.
 
-/*Предикат вывода всех женщин*/
+/*
+women() - is failure
+Предикат вывода всех женщин
+*/
 women():- woman(X), print(X), nl, fail.
 
-/*Предикат вывода всех детей X*/
+/*
+children(+X:atom) - if failure
+Предикат вывода всех детей X
+*/
 children(X):- parent(X,Y), print(Y), nl, fail.
 
-/*Предикат, определяющий то, что X - мать Y*/
+/*
+mother(?X:atom, +Y:atom) - if def
+Предикат, определяющий то, что X - мать Y
+*/
 mother(X,Y):- woman(X), parent(X,Y).
 /*Предикат вывода матерей X*/
 mother(X):- mother(Y,X), print(Y), nl, fail.
