@@ -2,20 +2,21 @@
 
 /**
 Входной предикат подсчёта макс цифры
-max_digit(+Number, -Max) is det
+max_digit(+Number, ?Max) is det
 */
 max_digit(Number, Max):-
     number_chars(Number, Chars),
     max_digit_helper(Chars, 0, Max).
 
 /**
-Условие выхода из цикла
-max_digit_helper(+[], ?Max, ?Max) is det
+Условие выхода из Рекурсии
+max_digit_helper(+[], +MaxSoFar, ?Max) is det
 */
-max_digit_helper([], Max, Max).
+max_digit_helper([], MaxSoFar, Max):-
+    Max is MaxSoFar.
 /**
 Вспомогательный предикат для рекуррентного обхода списка символов
-max_digit_helper(+[H|T], +MaxSoFar, -Max) is det
+max_digit_helper(+[H|T], +MaxSoFar, ?Max) is det
 */
 max_digit_helper([H|T], MaxSoFar, Max):-
     char_code('0', ZeroCode),
