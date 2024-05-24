@@ -27,6 +27,30 @@ max_digit_helper([H|T], MaxSoFar, Max):-
     NewMax is max(Digit, MaxSoFar),
     max_digit_helper(T, NewMax, Max).
 
+/**
+Входной предикат подсчёта макс цифры
+max_digit_up(?Number, ?Max) is det
+*/
+max_digit_up(Number, Max):-
+    number_chars(Number, Chars),
+    max_digit_up_helper(Chars, Max).
+
+/**
+Условие выхода из Рекурсии
+max_digit_up_helper(?List, ?Max) is det
+*/
+max_digit_up_helper([], 0):-!.
+/**
+Вспомогательный предикат для рекуррентного обхода списка символов
+max_digit_helper(+List, ?Max) is det
+*/
+max_digit_up_helper([H|T], Max):-
+    max_digit_up_helper(T, NewMax),
+    char_code('0', ZeroCode),
+    char_code(H, CharCode),
+    Digit is CharCode - ZeroCode,
+    Max is max(Digit, NewMax).
+
 /**Задание 2.2-----------------------------------------------*/
 
 /**
@@ -59,6 +83,38 @@ sum_of_digits_divided_by_3_helper([H|T], SumAcc,Sum):-
 	);(
 	    sum_of_digits_divided_by_3_helper(T, SumAcc, Sum)
 	)).
+
+/**
+Входной предикат подсчёта суммы цифр делящихся на 3
+sum_of_digits_divided_by_3_up(+Number,?Sum) is det
+*/
+sum_of_digits_divided_by_3_up(Number, Sum):-
+    number_chars(Number, Chars),
+    sum_of_digits_divided_by_3_up_helper(Chars, Sum).
+
+/**
+Условие выхода из цикла + унификация 3 аргумента
+sum_of_digits_divided_by_3_up_helper(+List, ?Sum) is det
+*/
+sum_of_digits_divided_by_3_up_helper([], 0):-!.
+/**
+Вспомогательный предикат для рекуррентного обхода списка символов
+sum_of_digits_divided_by_3_up_helper(+List, ?Sum) is det
+*/
+sum_of_digits_divided_by_3_up_helper([H|T], Sum):-
+    char_code('0', ZeroCode),
+    char_code(H, CharCode),
+	/**Получение числового значения*/
+    Digit is CharCode - ZeroCode,
+	/**Изменение суммы по условию, ветвление*/
+	(Digit mod 3 =:= 0 -> (
+        sum_of_digits_divided_by_3_up_helper(T, NewSum),
+        Sum is Digit + NewSum
+	);(
+	    sum_of_digits_divided_by_3_up_helper(T, NewSum),
+	    Sum is NewSum
+	)).
+
 
 /**Задание 2.3-----------------------------------------------*/
 
