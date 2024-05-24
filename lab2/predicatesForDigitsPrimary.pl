@@ -94,6 +94,99 @@ find_amount_of_digits_primary_to_internal(NumberDividersList,[H|T],Amount):-
         Amount is NewAmount
     )).
 
+/**ЗАДАНИЕ 5.1-------------------------------------*/
+
+find_nod(FirstNumber, 0, FirstNumber).
+/**
+ Функция поиска НОД между двумя числами
+ find_nod(+FirstNumber,+SecondNumber,?Nod)
+*/
+find_nod(FirstNumber,SecondNumber,Nod):-
+    SecondNumber \= 0,
+    ModResult is FirstNumber mod SecondNumber,
+    find_nod(SecondNumber, ModResult, Nod).
+
+/**
+    Функция поодсчёта количества взаимоПростых чисел к заданному
+    find_amount_of_digits_primary_to_easy(+Number, ?Amount) is det
+*/
+find_amount_of_digits_primary_to_easy(Number, Amount):-
+     numlist(1, Number, NumbersToCompareList),
+     find_amount_of_digits_primary_to_easy_internal(Number, NumbersToCompareList, Amount).
+
+/**
+    Функция подсчёта количества взаимоПростых чисел к заданному рекурсией вверх
+    Выход из рекурсии
+    find_amount_of_digits_primary_to_internal(+NumberDividersList, +NumbersToCompareList, ?Amount) is det
+*/
+find_amount_of_digits_primary_to_easy_internal(_,[],0).
+/**
+    Функция подсчёта количества взаимоПростых чисел к заданному рекурсией вверх
+    find_amount_of_digits_primary_to_easy_internal(+NumberDividersList, +NumbersToCompareList, ?Amount) is det
+*/
+find_amount_of_digits_primary_to_easy_internal(Number,[H|T],Amount):-
+    find_nod(Number, H, Nod),
+    (Nod =:= 1 -> (
+        find_amount_of_digits_primary_to_easy_internal(Number, T, NewAmount),
+        Amount is NewAmount + 1
+    );(
+        find_amount_of_digits_primary_to_easy_internal(Number, T, NewAmount),
+        Amount is NewAmount
+    )).
+
+/**ЗАДАНИЕ 5.2-------------------------------------*/
+%Найти делитель числа,
+%являющийся взаимно простым с наибольшим количеством
+%цифр данного числа.
+
+/**
+ Преобразовывает число с список чисел
+*/
+number_to_digits(0, [0]).
+number_to_digits(N, Digits) :-
+    N > 0,
+    number_to_digits_helper(N, Digits).
+
+number_to_digits_helper(0, []).
+number_to_digits_helper(N, Digits) :-
+    N > 0,
+    NextDigit is N mod 10,
+    Rest is N // 10,
+    number_to_digits_helper(Rest, RestDigits),
+    append(RestDigits, [NextDigit], Digits).
+
+/**
+    Критерий Взаимной простоты
+    self_primary_criteria(+ToCompare,+Xi) is failure
+*/
+self_primary_criteria(ToCompare,Xi):-
+    find_nod(ToCompare, Xi, Nod),
+    Nod =:= 1.
+
+/**
+    find_divider_specific(+Number,?Divider) is det
+*/
+find_divider_specific(Number,Divider):-
+    calc_dividers_list(Number,DividersList),
+    number_to_digits(Number, DigitsList),
+    find_divider_specific_internal(DividersList,DigitsList,Divider).
+
+find_divider_specific_internal([H|[]],_,H).
+
+/**
+    find_divider_specific_internal(+DividersList,+DigitsList,?Divider) is det
+*/
+find_divider_specific_internal([H|T],DigitsList,Divider):-
+    find_divider_specific_internal(T,DigitsList,NewDivider),
+    include(self_primary_criteria(H),DigitsList,PrimaryToHList),
+    length(PrimaryToHList,PrimaryToHListLength),
+    include(self_primary_criteria(NewDivider),DigitsList,PrimaryToNewDividerList),
+    length(PrimaryToNewDividerList,PrimaryToNewDividerListLength),
+    (PrimaryToNewDividerListLength < PrimaryToHListLength, H \= 1 -> (
+        Divider is H
+    );(
+        Divider is NewDivider
+    )).
 
 
 
