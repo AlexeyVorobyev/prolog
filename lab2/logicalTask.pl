@@ -17,12 +17,12 @@ pr_girls:-
     in_list(Girls, [valya, _, _]),
     in_list(Girls, [natasha, _, _]),
 
-    in_list(Girls, [_, white, _]),
-    in_list(Girls, [_, green, _]),
     in_list(Girls, [_, blue, _]),
+    in_list(Girls, [_, green, _]),
+    in_list(Girls, [_, white, _]),
 
-    in_list(Girls, [_, _,white]),
     in_list(Girls, [_, _,green]),
+    in_list(Girls, [_, _,white]),
     in_list(Girls, [_, _,blue]),
 
     in_list(Girls, [ann, SameColor1, _]),
@@ -37,6 +37,9 @@ pr_girls:-
     in_list(Girls, [ann, DressAnn, ShoesAnn]),
     in_list(Girls, [valya, DressValya, ShoesValya]),
     in_list(Girls, [natasha, DressNatasha, ShoesNatasha]),
+
+    print(Girls), nl,
+
     write("ann dress:"),write(DressAnn),write(" "), nl,
     write("valya dress:"),write(DressValya),write(" "),nl,
     write("natasha dress:"),write(DressNatasha), write(" "),nl,
