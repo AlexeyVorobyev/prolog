@@ -8,6 +8,22 @@
 in_list([El|_],El).
 in_list([_|T],El):-in_list(T,El).
 
+
+/**
+    Предикат очищения матрицы от дублирующих списков
+    delete_repeats_in_matrix(+Matrix,-ClearedMatrix).
+*/
+delete_repeats_in_matrix([],[]).
+delete_repeats_in_matrix([H|T],ClearedMatrix):-
+    delete_repeats_in_matrix(T,NewClearedMatrix),
+    (in_list(NewClearedMatrix, H) -> (
+        ClearedMatrix = NewClearedMatrix
+    );(
+        append(NewClearedMatrix, [H],ClearedMatrix)
+    )).
+
+
+
 /**
     Предикат генерации одного размещения с повторением
     arrangement_with_repetitions(+AlphabetList,+Length,-Arrangement) is det
@@ -101,7 +117,7 @@ subset(List, Buf, Subset):-
     subset(Tail, [Element|Buf], Subset).
 
 /**
-    Предикат получения всех подмножеств спсика
+    Предикат получения всех подмножеств списка
     subset_lsit(+List,-SubsetList) is det
 */
 subset_list(List,SubsetList):-
@@ -110,6 +126,7 @@ subset_list(List,SubsetList):-
         subset(List,Subset),
         SubsetList
     ).
+
 
 
 /**
@@ -123,6 +140,14 @@ comb_6(RestAlphabetList,Word):-
     \+ subset(Word,[a,a,a]),
     check_repeats(RestAlphabetList,Word,Result),
     Result.
+
+comb_6_list(RestAlphabetList,List):-
+    findall(
+        Word,
+        comb_6(RestAlphabetList,Word),
+        ListRaw
+    ),
+    delete_repeats_in_matrix(ListRaw,List).
 
 check_repeats([],_,true).
 check_repeats([H|T],Word,Result):-
@@ -160,4 +185,14 @@ comb_7(AlphabetList,Word):-
     include(is_not_equal(Triple,Double),AlphabetList,AlphabetListCleared),
     check_repeats(AlphabetListCleared,Word,Result),
     Result.
+
+comb_7_list(AlphabetList,List):-
+    findall(
+        Word,
+        comb_7(AlphabetList,Word),
+        ListRaw
+    ),
+    delete_repeats_in_matrix(ListRaw,List).
+
+
 
