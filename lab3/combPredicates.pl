@@ -135,7 +135,7 @@ subset_list(List,SubsetList):-
     comb_6(+RestAlphabetList,?Word) is det
 */
 comb_6(RestAlphabetList,Word):-
-    comb_with_repetitions([a|RestAlphabetList],5,Word),
+    arrangement_with_repetitions([a|RestAlphabetList],5,Word),
     subset(Word,[a,a]),
     \+ subset(Word,[a,a,a]),
     check_repeats(RestAlphabetList,Word,Result),
@@ -171,10 +171,10 @@ is_not_equal(Triple,Double,Xi):-
     Слова длины 7, в которых ровно 1 буква повторяются 2 раза, ровно
     одна буква повторяется 3 раза остальные буквы не повторяются.
 */
-comb_7(AlphabetList,Word):-
+comb_9(AlphabetList,Word):-
     length(AlphabetList, AlphabetListLength),
     AlphabetListLength >= 4,
-    comb_with_repetitions(AlphabetList,7,Word),
+    arrangement_with_repetitions(AlphabetList,7,Word),
     in_list(AlphabetList, Triple),
     in_list(AlphabetList, Double),
     Triple \= Double,
@@ -186,13 +186,57 @@ comb_7(AlphabetList,Word):-
     check_repeats(AlphabetListCleared,Word,Result),
     Result.
 
-comb_7_list(AlphabetList,List):-
+comb_9_list(AlphabetList,List):-
     findall(
         Word,
-        comb_7(AlphabetList,Word),
+        comb_9(AlphabetList,Word),
         ListRaw
     ),
     delete_repeats_in_matrix(ListRaw,List).
 
+/**
+    Задание 4
+    Вывод всех комбинаторных объектов в файл
+*/
+
+% write_list_str(+String) - напечатать строку
+write_list_str([]):-!.
+write_list_str([H|List]):-
+    write(H),
+    write_list_str(List).
+
+% write_list_of_lists(+List) - вывести список списков (список строк)
+write_list_of_lists([]):-!.
+write_list_of_lists([H|TailListOfLists]):-
+    write_list_str(H),
+    nl,
+    write_list_of_lists(TailListOfLists),
+    !.
+
+% write_to_file(+FilePath, +ListOfStrings) - записать в файл список строк
+write_to_file(FilePath, ListOfStrings):-
+    tell(FilePath),
+    write_list_of_lists(ListOfStrings),
+    told,
+    !.
 
 
+% arrangement_without_repetitions_list_to_file(+FileWritePath,+AlphabetList,+Length)
+arrangement_without_repetitions_list_to_file(FileWritePath,AlphabetList,Length):-
+    arrangement_without_repetitions_list(AlphabetList,Length,ArrangementList),
+    write_to_file(FileWritePath,ArrangementList).
+
+% subset_list_to_file(+FileWritePath,+List)
+subset_list_to_file(FileWritePath,List):-
+    subset_list(List,SubsetList),
+    write_to_file(FileWritePath,SubsetList).
+
+% comb_6_list_to_file(+FileWritePath,+List)
+comb_6_list_to_file(FileWritePath,RestAlphabetList):-
+    comb_6_list(RestAlphabetList,ResultList),
+    write_to_file(FileWritePath,ResultList).
+
+% comb_9_list_to_file(+FileWritePath,+List)
+comb_9_list_to_file(FileWritePath,AlphabetList):-
+    comb_9_list(AlphabetList,ResultList),
+    write_to_file(FileWritePath,ResultList).
