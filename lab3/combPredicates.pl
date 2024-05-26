@@ -240,3 +240,46 @@ comb_6_list_to_file(FileWritePath,RestAlphabetList):-
 comb_9_list_to_file(FileWritePath,AlphabetList):-
     comb_9_list(AlphabetList,ResultList),
     write_to_file(FileWritePath,ResultList).
+
+
+/**
+    Задание 6
+    Составить предикат средствами SWI-Prolog, который составляет и выводит в файл
+    все слова алфавита {a,b,c,d,e,f} длины n, в которых ровно одна буква повторяется k раз, а
+    другая m раз, остальные буквы встречаются ровно 1 раз или не встречаются вообще.
+*/
+
+%comb_specific_for_task6(+N,+K,+M,?Word) is det
+comb_specific_for_task6(N,K,M,Word):-
+    AlphabetList = [a,b,c,d,e,f],
+    arrangement_with_repetitions(AlphabetList,N,Word),
+    in_list(AlphabetList, RepeatableK),
+    in_list(AlphabetList, RepeatableM),
+    RepeatableK \= RepeatableM,
+    include(is_equal(RepeatableK), Word, RepeatableKList),
+    length(RepeatableKList, RepeatableKListLength),
+    RepeatableKListLength == K,
+    include(is_equal(RepeatableM), Word, RepeatableMList),
+    length(RepeatableMList, RepeatableMListLength),
+    RepeatableMListLength == M,
+    include(is_not_equal(RepeatableK,RepeatableM),AlphabetList,AlphabetListCleared),
+    check_repeats(AlphabetListCleared,Word,Result),
+    Result.
+
+
+is_equal(Goal,Xi):-
+    Goal == Xi.
+
+comb_specific_for_task6_list(N,K,M,List):-
+    findall(
+        Word,
+        comb_specific_for_task6(N,K,M,Word),
+        ListRaw
+    ),
+    delete_repeats_in_matrix(ListRaw,List).
+
+% comb_specific_for_task6_list_to_file(+FileWritePath,+N,+K,+M)
+comb_specific_for_task6_list_to_file(FileWritePath,N,K,M):-
+    comb_specific_for_task6_list(N,K,M,ResultList),
+    write_to_file(FileWritePath,ResultList).
+
